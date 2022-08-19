@@ -1,5 +1,5 @@
 # STGAT
-This repo holds the code for: Spatial Temporal Graph Attention Network for Skeleton-Based Action Recognition [pdf](https://arxiv.org/abs/2208.08599)
+This repo holds the code for: Spatial Temporal Graph Attention Network for Skeleton-Based Action Recognition([pdf](https://arxiv.org/abs/2208.08599))
 
 
 # Data Preparation
