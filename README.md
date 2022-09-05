@@ -19,7 +19,7 @@ This repo holds the code for: Spatial Temporal Graph Attention Network for Skele
 
 Change the config file depending on what you want.
 
-    `python train_val_test/train.py --config ./config/your_dataset/your_config_file.yaml`
+    `python train_val_test/train.py -config ./config/your_dataset/your_config_file.yaml`
 
 Train with decoupled modalities by changing the 'num_skip_frame'(None to 1 or 2) option and 'decouple_spatial'(False to True) option in config file and train again. 
     
