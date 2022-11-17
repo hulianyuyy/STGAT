@@ -16,10 +16,13 @@ This repo holds the code for: Spatial Temporal Graph Attention Network for Skele
     
      
 # Training & Testing
+Change line 10 in train.py to the absolute path of this STGAT repo you download.
+
+Set the data_path and label_path to the path of your dataset in line 4,5,13,14, and specify the cuda_visible_device & device_id in line 61, 62, of /train_val_test/config/your_dataset/your_config_file.yaml, respectively.
 
 Change the config file depending on what you want.
 
-    `python train_val_test/train.py -config ./config/your_dataset/your_config_file.yaml`
+    `python train_val_test/train.py -config ./train_val_test/config/your_dataset/your_config_file.yaml`
 
 Train with decoupled modalities by changing the 'num_skip_frame'(None to 1 or 2) option and 'decouple_spatial'(False to True) option in config file and train again. 
     

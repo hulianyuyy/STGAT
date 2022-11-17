@@ -10,7 +10,7 @@ import random
 import shutil
 import inspect
 from dataset.ntu_skeleton import NTU_SKE
-from dataset.dhg_skeleton import DHG_SKE
+from dataset.kinetics_skeleton import KINETICS_SKE
 
 
 def init_seed(x):
@@ -29,6 +29,9 @@ def data_choose(args, block):
         if args.data == 'ntu_skeleton':
             workers = args.worker
             data_set_val = NTU_SKE(mode='eval_rot', **args.data_param['val_data_param'])
+        elif args.data == 'kinetics_skeleton':
+            workers = args.worker
+            data_set_val = KINETICS_SKE(mode='eval_rot', **args.data_param['val_data_param'])
         else:
             raise (RuntimeError('No data loader'))
         data_loader_val = DataLoader(data_set_val, batch_size=args.batch_size, shuffle=False,
@@ -45,14 +48,10 @@ def data_choose(args, block):
             workers = args.worker
             data_set_train = NTU_SKE(mode='train', **args.data_param['train_data_param'])
             data_set_val = NTU_SKE(mode='val', **args.data_param['val_data_param'])
-        elif args.data == 'dhg_skeleton':
+        elif args.data == 'kinetics_skeleton':
             workers = args.worker
-            data_set_train = DHG_SKE(mode='train', **args.data_param['train_data_param'])
-            data_set_val = DHG_SKE(mode='val', **args.data_param['val_data_param'])
-        elif args.data == 'shrec_skeleton':
-            workers = args.worker
-            data_set_train = DHG_SKE(mode='train', **args.data_param['train_data_param'])
-            data_set_val = DHG_SKE(mode='val', **args.data_param['val_data_param'])
+            data_set_train = KINETICS_SKE(mode='train', **args.data_param['train_data_param'])
+            data_set_val = KINETICS_SKE(mode='val', **args.data_param['val_data_param'])
         else:
             raise (RuntimeError('No data loader'))
         data_loader_val = DataLoader(data_set_val, batch_size=args.batch_size, shuffle=False,

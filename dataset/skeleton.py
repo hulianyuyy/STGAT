@@ -41,6 +41,15 @@ class Skeleton(Dataset):
 
         data_numpy = data_numpy[:, data_numpy.sum(0).sum(-1).sum(-1) != 0]  # CTVM
 
+        C, T, V, M = data_numpy.shape
+        while(T==0):
+            index = int(torch.randint(0, len(self.data), (1,)))
+            data_numpy = self.data[index]
+            label = int(self.label[index])
+            sample_name = self.sample_name[index]
+            data_numpy = np.array(data_numpy)
+            data_numpy = data_numpy[:, data_numpy.sum(0).sum(-1).sum(-1) != 0]  # CTVM
+            C, T, V, M = data_numpy.shape
         # data transform
         if self.decouple_spatial:
             data_numpy = decouple_spatial(data_numpy, edges=self.edge)

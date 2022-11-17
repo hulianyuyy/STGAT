@@ -62,8 +62,8 @@ def train_classifier(data_loader, model, loss_function, optimizer, global_step, 
         # inputs, labels = Variable(inputs.cuda(non_blocking=True)), Variable(labels.cuda(non_blocking=True))
         inputs, targets, labels = inputs.cuda(non_blocking=True), targets.cuda(non_blocking=True), labels.cuda(non_blocking=True)
         # net = torch.nn.DataParallel(model, device_ids=args.device_id)
-        outputs, loss_LiftPool_u, loss_LiftPool_p = model(inputs)
-        loss = loss_function(outputs, targets) + 0.0001*loss_LiftPool_u+ 0.0001*loss_LiftPool_p
+        outputs = model(inputs)
+        loss = loss_function(outputs, targets) 
         optimizer.zero_grad()
         loss.backward()
         if args.grad_clip:
@@ -128,14 +128,14 @@ def val_classifier(data_loader, model, loss_function, global_step, args, writer)
         with torch.no_grad():
             inputs, targets, labels = inputs.cuda(non_blocking=True), targets.cuda(non_blocking=True), labels.cuda(
                 non_blocking=True)
-            outputs, loss_LiftPool_u, loss_LiftPool_p = model(inputs)
+            outputs = model(inputs)
             if len(outputs.data.shape) == 3:  # T N cls
                 _, predict_label = torch.max(outputs.data[:, :, :-1].mean(0), 1)
                 score_frag.append(outputs.data.cpu().numpy().transpose(1,0,2))
             else:
                 _, predict_label = torch.max(outputs.data, 1)
                 score_frag.append(outputs.data.cpu().numpy())
-            loss = loss_function(outputs, targets) + 0.0001*loss_LiftPool_u+ 0.0001*loss_LiftPool_p
+            loss = loss_function(outputs, targets)
 
         predict = list(predict_label.cpu().numpy())
         video_pred.extend(predict)

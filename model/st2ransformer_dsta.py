@@ -97,6 +97,7 @@ class STAttentionBlock(nn.Module):
         self.use_pes = use_pes
         self.use_pet = use_pet
         self.window_size = 3
+        self.num_node = num_node
 
         pad = int((kernel_size - 1) / 2)
         self.use_spatial_att = use_spatial_att
@@ -116,7 +117,10 @@ class STAttentionBlock(nn.Module):
                 #self.alphas = nn.Parameter(torch.ones(1, num_subset, 1, 1), requires_grad=True)
                 #self.out_conv = nn.Conv3d(out_channels, out_channels, kernel_size=(1, self.window_size, 1))
                 #self.betas = nn.Parameter(torch.ones(1, num_subset, self.window_size, 1), requires_grad=True)
-                from graph.ntu_rgb_d import AdjMatrixGraph
+                if self.num_node == 18: # Kinetics series
+                    from graph.kinetics import AdjMatrixGraph
+                elif self.num_node == 25: # NTU RGB+D series
+                    from graph.ntu_rgb_d import AdjMatrixGraph
                 from torch.autograd import Variable
                 self.graph = Variable(torch.from_numpy(AdjMatrixGraph().A_sep.astype(np.float32)), requires_grad=False)
                 self.graph_a = Variable(torch.from_numpy(AdjMatrixGraph().A.astype(np.float32)), requires_grad=False)
@@ -214,12 +218,12 @@ class STAttentionBlock(nn.Module):
                 self.graph = self.graph.cuda(x.get_device())
                 attention = torch.cat([torch.where(self.graph[i].repeat(self.window_size, 1) > 0, attention[:, i, :, :], zero_vec).unsqueeze(1) for i in range(self.num_subset)], 1)
                 #attention = F.softmax(attention, dim=-2)* self.alphas
-                attention = F.softmax(attention, dim=-1)#* self.betas.repeat(1,1,25,1)
+                attention = F.softmax(attention, dim=-1)#* self.betas.repeat(1,1,self.num_node,1)
                 self.graph_a = self.graph_a.cuda(x.get_device())
                 diff = (self.diff_net(torch.einsum('nctu,uv->nctv',y, self.graph_a)).repeat(1,1,1,self.window_size) - upfold)\
                     .view(N, self.num_subset, self.in_channels//self.num_subset, T ,self.window_size, V)  #nsctwv
                 diff = torch.sigmoid(diff.mean(-1).mean(2).mean(2)) # nsw
-                attention = attention *diff.unsqueeze(-1).repeat(1,1,25,1)
+                attention = attention *diff.unsqueeze(-1).repeat(1,1,self.num_node,1)
             if self.glo_reg_s:
                 attention = attention + self.attention0s.repeat(N, 1, 1, 1)
             attention = self.drop(attention)
