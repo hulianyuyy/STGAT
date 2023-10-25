@@ -214,6 +214,7 @@ class STAttentionBlock(nn.Module):
                 #attention = torch.cat([torch.where(self.graph[i].repeat(self.window_size, 1) > 0, attention[:, i, :, :], zero_vec).unsqueeze(1) for i in range(self.num_subset)], 1)
                 import torch.nn.functional as F
                 attention = attention + torch.einsum('nsctu,nsctv->nsuv', [q, k]) / (self.inter_channels * T)
+                #np.save('stgat_attention.npy', F.softmax(attention, dim=-1)[0].detach().cpu().numpy().copy()) 
                 zero_vec = -9e15*torch.ones_like(attention[:,0])
                 self.graph = self.graph.cuda(x.get_device())
                 attention = torch.cat([torch.where(self.graph[i].repeat(self.window_size, 1) > 0, attention[:, i, :, :], zero_vec).unsqueeze(1) for i in range(self.num_subset)], 1)
