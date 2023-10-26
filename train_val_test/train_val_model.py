@@ -48,7 +48,7 @@ def train_classifier(data_loader, model, loss_function, optimizer, global_step, 
     process = tqdm(IteratorTimer(data_loader), desc='Train: ', dynamic_ncols=True)
     loss_values = []
     for index, (inputs, labels) in enumerate(process):
-        # if infex == xxxx:
+        #if index == 0:
         # label_onehot = to_onehot(args.class_num, labels, args.label_smoothing_num)
         if args.mix_up_num > 0:
             # self.print_log('using mixup data: ', self.arg.mix_up_num)

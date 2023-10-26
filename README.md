@@ -29,4 +29,9 @@ Train with decoupled modalities by changing the 'num_skip_frame'(None to 1 or 2)
 Then combine the generated scores with: 
 
     `python train_val_test/ensemble.py`
+
+# Visualization 
+To visualize the attention weights of the center frame, you could first (1) select an index of input samples, and only pass this sample to the training process by uncommenting line 51 in ./train_val_test/train_val_model.py and change 'xxxx' into the index you select. Note that you should indent line 52~line 101, and change the training batch size into 1 in the config file (e.g., line 51 in ./train_val_test/config/ntu/ntu60_dsta.yaml); (2) uncomment line 217 in ./model/st2ransformer.py. After that, you could get a 'stgat_attention.npy' under your folder. Next, run the 'ntu_visualize_add_attention.py' with desired parameter. Note that the indices you pass into the py file should be consistent with that in the './train_val_test/train_val_model.py'. 
+
+You may also change some hyperparameters in the files to change the visualization results (e.g., the threshold of line 209 in 'ntu_visualize_add_attention.py').
      

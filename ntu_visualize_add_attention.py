@@ -8,6 +8,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
+mpl.use('TkAgg')
 
 # NTU RGB+D 60/120 Action Classes
 actions = {
@@ -173,9 +174,6 @@ def visualize(args):
             joint_locs = skeleton[:,[i,j]]
             # plot them
             ax.plot(joint_locs[0],joint_locs[1],joint_locs[2], color='blue')
-        if args.save_interval !=-1:
-            if skeleton_index[0] % args.save_interval in [args.save_interval-1,1]:
-                plt.savefig('{}_head_{}_index_{}.pdf'.format('stgat', int(args.head), int(skeleton_index[0])))
         for i in range(num_joints):
             for j in range(num_joints):
                 if attention_weights[i][j]:
@@ -206,9 +204,9 @@ def visualize(args):
         print(f'Sample index: {index}\nAction: {action_class}-{action_name}\n')   # (C,T,V,M)
         
         attention_weights = np.load('stgat_attention.npy')
-        window_size = int(attention_weights.shape[1]/attention_weights.shape[2])     # (num_heads, num_joints, num_joints*window_size)
-        attention_weights = attention_weights[args.head,:,(window_size-1)//2*num_joints:((window_size-1)//2+1)*num_joints,:]  # (num_joints, num_joints), only visualize attention weights of the center frame
-        attention_weights = attention_weights>0.05
+        window_size = int(attention_weights.shape[1]/attention_weights.shape[2])     # (num_heads, num_joints*window_size, num_joints)
+        attention_weights = attention_weights[args.head,(window_size-1)//2*num_joints:((window_size-1)//2+1)*num_joints,:]  # (num_joints, num_joints), only visualize attention weights of the center frame
+        attention_weights = attention_weights>0.1
 
         # Pick the first body to visualize
         skeleton1 = skeletons[..., 0]   # out (C,T,V)
